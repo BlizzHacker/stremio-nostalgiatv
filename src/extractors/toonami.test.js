@@ -16,10 +16,10 @@ describe('toonami extractor (SRC-02)', () => {
     assert.ok(Array.isArray(results), 'extract() must return an array');
   });
 
-  test('extract() returns exactly 7 channels', async () => {
+  test('extract() returns exactly 4 channels', async () => {
     assert.ok(extractor, 'toonami.js not found');
     const results = await extractor.extract();
-    assert.equal(results.length, 7, `expected 7 channels, got ${results.length}`);
+    assert.equal(results.length, 4, `expected 4 channels, got ${results.length}`);
   });
 
   test('every entry has id starting with ntv-toonamiaftermath-', async () => {

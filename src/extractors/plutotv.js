@@ -6,6 +6,10 @@
 // HLS, TV-safe (Android TV / Stremio desktop).
 const CHANNELS = [
   { id: 'ntv-pluto-90skids',    url: 'https://jmp2.uk/plu-6452c814939a590008567a3b.m3u8' },
+  { id: 'ntv-pluto-90skids2',   url: 'https://jmp2.uk/plu-6452c77ed3fdde00080eb3a8.m3u8' },
+  { id: 'ntv-pluto-90sthrowback', url: 'https://jmp2.uk/plu-5f4d86f519358a00072b978e.m3u8' },
+  { id: 'ntv-pluto-80srewind',  url: 'https://jmp2.uk/plu-5ca525b650be2571e3943c63.m3u8' },
+  { id: 'ntv-pluto-00sreplay',  url: 'https://jmp2.uk/plu-62ba60f059624e000781c436.m3u8' },
   { id: 'ntv-pluto-foreverkids', url: 'https://jmp2.uk/plu-56171fafada51f8004c4b40f.m3u8' },
   { id: 'ntv-pluto-nick',       url: 'https://jmp2.uk/plu-5ca673e0d0bd6c2689c94ce3.m3u8' },
   { id: 'ntv-pluto-naruto',     url: 'https://jmp2.uk/plu-5da0c85bd2c9c10009370984.m3u8' },

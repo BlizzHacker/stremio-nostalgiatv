@@ -14,8 +14,12 @@ function clear() {
   store.clear();
 }
 
+function del(id) {
+  return store.delete(id);
+}
+
 function all() {
   return store;
 }
 
-module.exports = { get, set, clear, all };
+module.exports = { get, set, clear, all, del };

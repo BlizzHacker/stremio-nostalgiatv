@@ -12,26 +12,37 @@ const PORT = process.env.PORT || 7000;
 
 const app = express();
 
-// Trust Cloudflare proxy so req.ip is the real client IP, not Cloudflare's
+// Trust the reverse proxy (Caddy) so req.ip reflects the forwarded client IP.
+// Set this to the number of proxies in front of the app. If Cloudflare sits in
+// front of Caddy, configure Caddy's trusted_proxies for Cloudflare and raise
+// this to match — do NOT read client-supplied headers like cf-connecting-ip
+// directly, which any request can forge to evade rate limiting.
 app.set('trust proxy', 1);
 
 // Security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; " +
+    "script-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'"
+  );
   next();
 });
 
-// Rate limiting — 120 requests per 15 minutes per real client IP
-// validate.keyGeneratorIpFallback disabled because cf-connecting-ip is always a plain IP string
+// Rate limiting — 120 requests per 15 minutes per client IP.
+// Keyed on the default req.ip, which trust proxy derives from X-Forwarded-For.
+// This cannot be spoofed by an arbitrary request header the way the previous
+// cf-connecting-ip key could.
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests' },
-  keyGenerator: (req) => req.headers['cf-connecting-ip'] || req.ip,
-  validate: { keyGeneratorIpFallback: false },
 }));
 
 // Landing page

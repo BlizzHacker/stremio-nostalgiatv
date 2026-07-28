@@ -3,13 +3,10 @@
 const BASE = 'http://api.toonamiaftermath.com:3000';
 
 const CHANNELS = [
-  { id: 'ntv-toonamiaftermath-est',      slug: 'est' },
-  { id: 'ntv-toonamiaftermath-pst',      slug: 'pst' },
-  { id: 'ntv-toonamiaftermath-movies',   slug: 'movies' },
-  { id: 'ntv-toonamiaftermath-radio',    slug: 'radio' },
-  { id: 'ntv-toonamiaftermath-snickest', slug: 'snick-est' },
-  { id: 'ntv-toonamiaftermath-snickpst', slug: 'snick-pst' },
-  { id: 'ntv-toonamiaftermath-mtv97',    slug: 'mtv97' },
+  { id: 'ntv-toonamiaftermath-est',    slug: 'est' },
+  { id: 'ntv-toonamiaftermath-pst',    slug: 'pst' },
+  { id: 'ntv-toonamiaftermath-movies', slug: 'movies' },
+  { id: 'ntv-toonamiaftermath-radio',  slug: 'radio' },
 ];
 
 // URLs are statically constructed — no HTTP fetch needed at extract time.
