@@ -71,7 +71,8 @@
       --card: #0f0f0f;
       --card2: #131313;
       --line: #1f1f1f;
-      --muted: #555;
+      --muted: #8a8a8a;
+      --red-text: #ff5a5f;
       --text: #e8e8e8;
     }
 
@@ -362,7 +363,7 @@
     }
 
     .group-pluto .group-name {
-      color: var(--red);
+      color: var(--red-text);
     }
 
     .channel-list {
@@ -392,11 +393,45 @@
       border-radius: 50%;
       background: #2d2d2d;
       flex-shrink: 0;
+    }
+
+    .is-live .live-dot {
+      background: #4caf50;
       animation: pulse 2.5s infinite;
     }
 
-    .channel-list li:nth-child(odd) .live-dot {
+    .channel-list li.is-live:nth-child(odd) .live-dot {
       animation-delay: 0.5s;
+    }
+
+    .ch-name {
+      flex: 1;
+    }
+
+    .is-offline {
+      opacity: 0.6;
+    }
+
+    .ch-off {
+      margin-left: auto;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .load-msg,
+    .load-error {
+      grid-column: 1 / -1;
+      padding: 1.5rem 1.75rem;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .load-error a {
+      color: var(--gold);
     }
 
     @keyframes pulse {
@@ -434,7 +469,7 @@
     }
 
     .cta-banner p {
-      color: #777;
+      color: var(--muted);
       font-size: 0.9rem;
       margin-bottom: 1.75rem;
     }
@@ -502,10 +537,79 @@
         flex-direction: column;
       }
     }
+
+    /* ── ACCESSIBILITY ── */
+
+    /* Visible keyboard focus on every interactive element */
+    a:focus-visible,
+    .btn:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* Keep focus mirroring the hover lift so it reads as interactive */
+    .btn:focus-visible {
+      transform: translateY(-2px);
+    }
+
+    /* Screen-reader-only text */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Skip link — hidden until focused */
+    .skip-link {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 1000;
+      background: var(--gold);
+      color: #000;
+      padding: 0.7rem 1.1rem;
+      font-weight: 800;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: top 0.15s;
+    }
+
+    .skip-link:focus {
+      top: 8px;
+    }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
+
+  <a class="skip-link" href="#channels">Skip to channel list</a>
+
+  <main id="main">
 
   <section class="hero">
     <div class="logo-wrap">
@@ -536,12 +640,12 @@
 
   <div class="stats-strip">
     <div class="stat">
-      <span class="stat-n">23</span>
-      <span class="stat-l">Live Channels</span>
+      <span class="stat-n" id="stat-total">23</span>
+      <span class="stat-l">Channels</span>
     </div>
     <div class="stat">
-      <span class="stat-n">4</span>
-      <span class="stat-l">Sources</span>
+      <span class="stat-n" id="stat-live">&mdash;</span>
+      <span class="stat-l">Live Now</span>
     </div>
     <div class="stat">
       <span class="stat-n">24/7</span>
@@ -549,65 +653,26 @@
     </div>
   </div>
 
-  <section class="channels-section">
+  <section class="channels-section" id="channels" aria-labelledby="channels-heading">
     <div class="section-header">
-      <h2>What's on</h2>
-      <span>23 channels across 4 sources</span>
+      <h2 id="channels-heading">What's on</h2>
+      <span id="section-summary">Live channel status</span>
     </div>
 
-    <div class="channel-grid">
+    <p id="channel-status" class="sr-only" role="status" aria-live="polite">Loading channel list&hellip;</p>
 
-      <div class="channel-group group-toonami">
-        <div class="group-label">
-          <span class="group-dot"></span>
-          <span class="group-name">Toonami Aftermath</span>
-        </div>
-        <ul class="channel-list">
-          <li><span class="live-dot"></span>Toonami Aftermath East</li>
-          <li><span class="live-dot"></span>Toonami Aftermath West</li>
-          <li><span class="live-dot"></span>Toonami Aftermath Movies</li>
-          <li><span class="live-dot"></span>Toonami Radio</li>
-        </ul>
-      </div>
-
-      <div class="channel-group group-cn">
-        <div class="group-label">
-          <span class="group-dot"></span>
-          <span class="group-name">Adult Swim / CN</span>
-        </div>
-        <ul class="channel-list">
-          <li><span class="live-dot"></span>Swim Rewind</li>
-          <li><span class="live-dot"></span>Cartoon Cartoons Network</li>
-          <li><span class="live-dot"></span>After Swim</li>
-          <li><span class="live-dot"></span>Verniy TV</li>
-          <li><span class="live-dot"></span>RetroStrange TV</li>
-        </ul>
-      </div>
-
-      <div class="channel-group group-pluto">
-        <div class="group-label">
-          <span class="group-dot"></span>
-          <span class="group-name">Pluto TV</span>
-        </div>
-        <ul class="channel-list">
-          <li><span class="live-dot"></span>90s Kids</li>
-          <li><span class="live-dot"></span>90s Kids TV 2</li>
-          <li><span class="live-dot"></span>90s Throwback</li>
-          <li><span class="live-dot"></span>80s Rewind</li>
-          <li><span class="live-dot"></span>00s Replay</li>
-          <li><span class="live-dot"></span>Forever Kids</li>
-          <li><span class="live-dot"></span>Nickelodeon</li>
-          <li><span class="live-dot"></span>Naruto</li>
-          <li><span class="live-dot"></span>One Piece</li>
-          <li><span class="live-dot"></span>Sailor Moon</li>
-          <li><span class="live-dot"></span>Yu-Gi-Oh!</li>
-          <li><span class="live-dot"></span>Inuyasha</li>
-          <li><span class="live-dot"></span>Pokemon</li>
-          <li><span class="live-dot"></span>Anime</li>
-        </ul>
-      </div>
-
+    <div class="channel-grid" id="channel-grid" aria-busy="true">
+      <p class="load-msg">Loading channels&hellip;</p>
     </div>
+
+    <noscript>
+      <div class="channel-grid">
+        <p class="load-msg">
+          Live channel status needs JavaScript. You can still
+          <a href="/manifest.json">install the addon</a> and browse every channel inside Stremio.
+        </p>
+      </div>
+    </noscript>
   </section>
 
   <div class="cta-banner">
@@ -623,12 +688,16 @@
     </div>
   </div>
 
+  </main>
+
   <footer>
     <div class="footer-links">
       <a href="/manifest.json" target="_blank">Manifest</a>
       <a href="https://github.com/atomtroxell/stremio-nostalgiatv" target="_blank" rel="noopener">GitHub</a>
     </div>
   </footer>
+
+  <script src="/status.js" defer></script>
 
 </body>
 

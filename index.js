@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const cron = require('node-cron');
 const addonInterface = require('./src/addon');
+const channels = require('./src/channels');
+const store = require('./src/store');
 const { refresh } = require('./src/refresh');
 
 const PORT = process.env.PORT || 7000;
@@ -48,6 +50,32 @@ app.use(rateLimit({
 // Landing page
 app.get('/', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
+});
+
+// Display grouping for the landing page — collapses the CN/Adult Swim sources
+// into one visual group while keeping Toonami and Pluto separate.
+function channelGroup(id) {
+  if (id.startsWith('ntv-toonamiaftermath-')) return 'Toonami Aftermath';
+  if (id.startsWith('ntv-pluto-')) return 'Pluto TV';
+  return 'Adult Swim / CN';
+}
+
+// Live channel status — single source of truth for the landing page list.
+// A channel is live when the latest refresh cycle resolved a URL for it.
+app.get('/status', (req, res) => {
+  const list = channels.map((ch) => ({
+    id: ch.id,
+    name: ch.name,
+    group: channelGroup(ch.id),
+    live: store.get(ch.id) !== null,
+  }));
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({
+    generatedAt: new Date().toISOString(),
+    total: list.length,
+    live: list.filter((c) => c.live).length,
+    channels: list,
+  });
 });
 
 // Stremio addon routes
